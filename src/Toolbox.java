@@ -1,5 +1,7 @@
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
 
 public class Toolbox {
 
@@ -17,24 +19,13 @@ public class Toolbox {
       throw new IllegalArgumentException("Array cannot be null and index must be within bounds.");
     }
 
-    // Create a new array to store the updated values of the previous array
-    String[] newArr = new String[array.length - 1];
-
-    // Iterate through the array to the desired index
-    // and instantiate a new index pointer for the new array
-    for (int i = 0, k = 0; i < array.length; i++) {
-      // Remove element at the desired index
-      if (i != index) {
-        // Move all values from the old array into the new one
-        newArr[k] = array[i];
-        // Move every subsequent element up by one index
-        k++;
-      }
+    // Shifting elements to the left
+    for (int i = index; i < array.length - 1; i++) {
+      array[i] = array[i + 1];
     }
-    // Print the before and after of the array
-    System.out.println("Before: " + array.toString());
-    System.out.println("After: " + newArr.toString());
 
+    // Set last element to null
+    array[array.length - 1] = null;
   }
 
   /**
@@ -52,6 +43,15 @@ public class Toolbox {
       throw new IllegalArgumentException("Array cannot be null and index must be within bounds.");
     }
 
+    // Iterate through the array from the last index to the desired index
+    for (int i = array.length - 1; i > index; i--) {
+      // Shift each element to the right until the desired index is reached
+      array[i] = array[i - 1];
+    }
+
+    // Change the value of the newly empltied index
+    array[index] = value;
+
   }
 
   /**
@@ -65,7 +65,15 @@ public class Toolbox {
     if (head == null) {
       throw new IllegalArgumentException("Head cannot be null.");
     }
-    return null;
+
+    // Set a new reference pointer at head
+    SingleNode current = head;
+    // Iterate through the list until .next = null
+    while (current.next != null) {
+      current = current.next;
+    }
+    // return the tail node
+    return current;
   }
 
   /**
@@ -79,7 +87,12 @@ public class Toolbox {
     if (tail == null) {
       throw new IllegalArgumentException("Tail cannot be null.");
     }
-    return null;
+    DoubleNode current = tail;
+    while (current.prev != null) {
+      current = current.prev;
+    }
+
+    return current;
   }
 
   /**
@@ -94,7 +107,15 @@ public class Toolbox {
     if (head == null) {
       throw new IllegalArgumentException("Head cannot be null.");
     }
-    return null;
+    Map<Integer, Integer> occMap = new HashMap<>();
+    SingleNode current = head;
+
+    while (current != null) {
+      int val = current.data;
+      occMap.put(val, occMap.getOrDefault(val, 0) + 1);
+      current = current.next;
+    }
+    return occMap;
   }
 
   /**
@@ -107,7 +128,31 @@ public class Toolbox {
     if (node == null) {
       throw new IllegalArgumentException("Node cannot be null.");
     }
+    // Create two reference points to be the head and tail of the list
+    DoubleNode head = node;
+    DoubleNode tail = node;
 
+    // Iterate through the list
+    if (node != null) {
+      // Check left of the target node
+      if (node.prev != null) {
+        // Set the previous node to point to the subsequent node of the target
+        node.prev.next = node.next;
+      } else {
+        // Set the head of the list to the subsequent node of the target
+        head = node.next;
+      }
+
+      // Check right of the target node
+      if (node.next != null) {
+        // Set the reference point of the subsequent node to point at the previous node
+        // of the target
+        node.next.prev = node.prev;
+      } else {
+        // Set the tail of the list to the previous node of the target
+        tail = node.prev;
+      }
+    }
   }
 
   /**
@@ -122,7 +167,26 @@ public class Toolbox {
     if (head == null || n < 0) {
       throw new IllegalArgumentException("Head cannot be null and n cannot be negative.");
     }
-    return null;
+
+    // Set reference point to head
+    SingleNode current = head;
+    // Set a counter to increment until reaching the target index
+    int count = 0;
+
+    // Iterate through the list
+    while (current != null) {
+      // if count equals the target index
+      if (count == n) {
+        // return the index
+        return current;
+      }
+      // Increment the counter until it hits the target index
+      count++;
+      // Continue the loop
+      current = current.next;
+    }
+
+    return current;
   }
 
   /**
@@ -137,6 +201,12 @@ public class Toolbox {
     if (node == null || newNode == null) {
       throw new IllegalArgumentException("Node and newNode cannot be null.");
     }
+
+    // Set the 'next' reference point of the new node to the same destination at the
+    // other nodes' 'next' reference point
+    newNode.next = node.next;
+    // Set the 'next' reference point of the first node to point at the new node
+    node.next = newNode;
 
   }
 
@@ -156,6 +226,16 @@ public class Toolbox {
   public static void rotateQueueLeft(Queue<Integer> queue, int k) {
     if (queue == null || k < 0) {
       throw new IllegalArgumentException("Queue cannot be null and k cannot be negative.");
+    }
+
+    int size = queue.size();
+    // Handles cases where k > size
+    k = k % size;
+
+    // Iterate through the queue by removing the first k elements
+    for (int i = 0; i < k; i++) {
+      // Remove front element and add it to the end
+      queue.add(queue.poll());
     }
 
   }
@@ -181,7 +261,25 @@ public class Toolbox {
     if (input == null) {
       throw new IllegalArgumentException("Input string cannot be null.");
     }
-    return false;
+
+    Stack<Character> stack = new Stack<>();
+
+    // for each character within input (converted into an array of characters)
+    for (char c : input.toCharArray()) {
+      if (c == '(') {
+        // push opening parens onto the stack
+        stack.push(c);
+      } else if (c == ')') {
+        if (stack.isEmpty()) {
+          // return false if there is an unmatched closing parens
+          return false;
+        }
+        // pop the matching opening parens
+        stack.pop();
+      }
+    }
+    // stack will return empty if balanced
+    return stack.isEmpty();
   }
 
 }

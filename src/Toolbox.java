@@ -15,17 +15,7 @@ public class Toolbox {
    *                                  bounds
    */
   public static void removeElementInPlace(String[] array, int index) {
-    if (array == null || index < 0 || index >= array.length) {
-      throw new IllegalArgumentException("Array cannot be null and index must be within bounds.");
-    }
 
-    // Shifting elements to the left
-    for (int i = index; i < array.length - 1; i++) {
-      array[i] = array[i + 1];
-    }
-
-    // Set last element to null
-    array[array.length - 1] = null;
   }
 
   /**
@@ -66,14 +56,6 @@ public class Toolbox {
       throw new IllegalArgumentException("Head cannot be null.");
     }
 
-    // Set a new reference pointer at head
-    SingleNode current = head;
-    // Iterate through the list until .next = null
-    while (current.next != null) {
-      current = current.next;
-    }
-    // return the tail node
-    return current;
   }
 
   /**
@@ -107,15 +89,7 @@ public class Toolbox {
     if (head == null) {
       throw new IllegalArgumentException("Head cannot be null.");
     }
-    Map<Integer, Integer> occMap = new HashMap<>();
-    SingleNode current = head;
 
-    while (current != null) {
-      int val = current.data;
-      occMap.put(val, occMap.getOrDefault(val, 0) + 1);
-      current = current.next;
-    }
-    return occMap;
   }
 
   /**
@@ -127,31 +101,6 @@ public class Toolbox {
   public static void removeNode(DoubleNode node) {
     if (node == null) {
       throw new IllegalArgumentException("Node cannot be null.");
-    }
-    // Create two reference points to be the head and tail of the list
-    DoubleNode head = node;
-    DoubleNode tail = node;
-
-    // Iterate through the list
-    if (node != null) {
-      // Check left of the target node
-      if (node.prev != null) {
-        // Set the previous node to point to the subsequent node of the target
-        node.prev.next = node.next;
-      } else {
-        // Set the head of the list to the subsequent node of the target
-        head = node.next;
-      }
-
-      // Check right of the target node
-      if (node.next != null) {
-        // Set the reference point of the subsequent node to point at the previous node
-        // of the target
-        node.next.prev = node.prev;
-      } else {
-        // Set the tail of the list to the previous node of the target
-        tail = node.prev;
-      }
     }
   }
 
@@ -167,25 +116,14 @@ public class Toolbox {
     if (head == null || n < 0) {
       throw new IllegalArgumentException("Head cannot be null and n cannot be negative.");
     }
-
-    // Set reference point to head
     SingleNode current = head;
-    // Set a counter to increment until reaching the target index
-    int count = 0;
-
-    // Iterate through the list
-    while (current != null) {
-      // if count equals the target index
-      if (count == n) {
-        // return the index
-        return current;
-      }
-      // Increment the counter until it hits the target index
-      count++;
-      // Continue the loop
+    if (n == 0)
+      return head;
+    for (int i = 0; i < n; i++) {
+      if (current == null)
+        return null;
       current = current.next;
     }
-
     return current;
   }
 
